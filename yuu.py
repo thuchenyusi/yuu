@@ -21,7 +21,7 @@ if not Path(default_path).exists():
 
 root = tkinter.Tk()
 root.title("Yuu")
-# root.iconbitmap('./icon/yuu.ico')
+root.iconbitmap('yuu.ico')
 root.resizable(0,0)
 
 mainframe = ttk.Frame(root, padding="12 12 12 12")

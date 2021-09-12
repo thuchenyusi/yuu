@@ -1,16 +1,21 @@
 import math
+import os
 import threading
 from pathlib import Path
 from PIL import Image
 
-def _list_img_(dir_path):
+from message_box import _ok_box_
+from message_box import _ask_save_
+
+valid_images_ext = [".jpg",".jpeg",".gif",".png"]
+
+def _list_img_(dir_path, it_flag = False):
     if not Path(dir_path).exists():
-        print("Directory not exists!")
+        _ok_box_(t='Error',m='No such directory!')
         return
-    img_list = [x for x in (Path(dir_path)).iterdir() if (x.is_file())]
+    img_list = [x for x in (Path(dir_path)).iterdir() if (x.is_file() and (x.suffix in valid_images_ext)) ]
     if not img_list:
-        print("No image detected")
-        exit()
+        _ok_box_(t='Error',m='No image detected!')
     return img_list
 
 def _combine_image_(img_list,column,size=(400,592)):
@@ -40,8 +45,11 @@ def _paste_(column,row,poster_size,target,imgs):
     for r_p_t in row_paste_threads:
         r_p_t.join()
     target.show()
-    image_file = 'C:\\Users\\THUChenYusi\\Pictures\\poster.jpg'
-    _image_save_(target,image_file)
+    if(_ok_box_(t='提示',m='请问是否保存？')):
+        _image_save_(target,_ask_save_(fileName='poster',
+        dirName=os.environ['USERPROFILE'] + '\\Pictures',
+        fileExt='.jpg',
+        fileTypes=[('all files', '.*'),('jpg pictures', '.jpg'),]))
 
 def _row_paste_(row_pos,cols,poster_size,target,source_imgs,threadLock):
     width = poster_size[0]
